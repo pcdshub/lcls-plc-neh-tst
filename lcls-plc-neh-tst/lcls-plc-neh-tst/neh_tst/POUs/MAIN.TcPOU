@@ -3,23 +3,26 @@
   <POU Name="MAIN" Id="{e4c6d6c5-3cb7-443a-8be2-8b81da92a002}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
-    {attribute 'pytmc' := 'pv: NEHPPM
+    {attribute 'pytmc' := 'pv: NEH:PPM
 						   io: i'}
-    {attribute 'TcLinkTo' := 'iVoltageINT := TIIB[Term 2 (EL3602)]^AI Inputs Channel 1^Value'}
+    {attribute 'TcLinkTo' := 'iVoltageINT := TIIB[Term 15 (EL3062)]^AI Inputs Channel 1^Value'}
     fbPowerMeter: FB_PPM_PowerMeter;
-    
-	// NEH-PPM: 1 Axis
-    {attribute 'pytmc' := 'pv: IM1K3:PPM:MMS'}
-    {attribute 'TcLinkTo' := '.bLimitForwardEnable  := TIIB[IM1K3-EL7041]^STM Status^Status^Digital input 1;
-                              .bLimitBackwardEnable := TIIB[IM1K3-EL7041]^STM Status^Status^Digital input 2;
-                              .bBrakeRelease        := TIIB[IM1K3-EL2004]^Channel 1^Output;
-                              .nRawEncoderULINT     := TIIB[IM1K3-EL5042]^FB Inputs Channel 1^Position'}
-    M1: ST_MotionStage := (sName := 'NEHPPM:MMS');
+
+    	
+	// IM1K3-PPM: 1 Axis
+    {attribute 'pytmc' := 'pv: NEH:PPM:MMS'}
+    {attribute 'TcLinkTo' := '.bLimitForwardEnable  := TIIB[Term 10 (EL7041)]^STM Status^Status^Digital input 1;
+                              .bLimitBackwardEnable := TIIB[Term 10 (EL7041)]^STM Status^Status^Digital input 2;
+                              .bBrakeRelease        := TIIB[Term 12 (EL2004)]^Channel 1^Output;
+                              .nRawEncoderULINT     := TIIB[Term 11 (EL5042)]^FB Inputs Channel 1^Position'}
+    M1: ST_MotionStage := (sName := 'NEH:PPM:MMS', nEnableMode := ENUM_StageEnableMode.ALWAYS, bPowerSelf := FALSE, bHardwareEnable := True);
+	fbMotionStage1 : FB_MotionStage;
 	
-END_VAR
-]]></Declaration>
+	
+END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[fbPowerMeter();]]></ST>
+      <ST><![CDATA[fbPowerMeter();
+fbMotionStage1(stMotionStage := M1);]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>
