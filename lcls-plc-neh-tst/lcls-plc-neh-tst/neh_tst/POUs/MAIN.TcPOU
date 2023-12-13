@@ -85,7 +85,7 @@ END_VAR]]></Declaration>
       <ST><![CDATA[IF NOT bInit THEN
     bInit := TRUE;
 
-    //stYStage.nEnableMode := ENUM_StageEnableMode.DURING_MOTION;
+    stYStage.nEnableMode := ENUM_StageEnableMode.DURING_MOTION;
     stYStage.nEnableMode := ENUM_StageEnableMode.ALWAYS;
 
     // Partial backcompat, this used to set fVelocity too but this should be set per install
