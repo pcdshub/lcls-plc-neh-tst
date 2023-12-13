@@ -3,15 +3,15 @@
   <POU Name="MAIN" Id="{e4c6d6c5-3cb7-443a-8be2-8b81da92a002}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
-	(* motor state config *)
-	bInit: BOOL;
-    
+    (* control flow bool*)
+    bInit: BOOL;
+
     // Y motor (state select).
-    stYStage: ST_MotionStage;
     fbYStage: FB_MotionStage;
 
-	fbStateDefaults: FB_PositionState_Defaults;
-	
+    (* state maintenence *)
+    fbStateDefaults: FB_PositionState_Defaults;
+
     {attribute 'pytmc' := '
         pv: MMS
         astPositionState.array: 1..4
@@ -19,21 +19,21 @@ VAR
     fbStates: FB_PositionStatePMPS1D;
     astPositionState: ARRAY[1..GeneralConstants.MAX_STATES] OF ST_PositionState;
     fbArrCheckWrite: FB_CheckPositionStateWrite;
-	
-	stOut: ST_PositionState;
+
+    stOut: ST_PositionState;
     // Settings for the POWERMETER state.
     stPower: ST_PositionState;
     // Settings for the YAG1 state.
     stYag1: ST_PositionState;
     // Settings for the YAG2 state.
     stYag2: ST_PositionState;
-	
-	// The fast fault output to fault to.
+
+    // The fast fault output to fault to.
     fbFFHWO: FB_HardwareFFOutput;
     // The arbiter to request beam conditions from.
     fbArbiter: FB_Arbiter(1);
-	
-	{attribute 'pytmc' := '
+
+    {attribute 'pytmc' := '
         pv: MMS:STATE:SET
         io: io
     '}
@@ -50,20 +50,20 @@ VAR
     sTransitionKey: STRING;
     // Set this to TRUE to re-read the loaded database immediately (useful for debug).
     bReadDBNow: BOOL;
-	
+
     {attribute 'pytmc' := 'pv: NEH:PPM
-						   io: i'}
+                           io: i'}
     {attribute 'TcLinkTo' := 'iVoltageINT := TIIB[Term 15 (EL3062)]^AI Inputs Channel 1^Value'}
     fbPowerMeter: FB_PPM_PowerMeter;
 
-    	
-	// IM1K3-PPM: 1 Axis
+
+    // IM1K3-PPM: 1 Axis
     {attribute 'pytmc' := 'pv: NEH:PPM:MMS'}
     {attribute 'TcLinkTo' := '.bLimitForwardEnable  := TIIB[Term 10 (EL7041)]^STM Status^Status^Digital input 1;
                               .bLimitBackwardEnable := TIIB[Term 10 (EL7041)]^STM Status^Status^Digital input 2;
                               .bBrakeRelease        := TIIB[Term 12 (EL2004)]^Channel 1^Output;
                               .nRawEncoderULINT     := TIIB[Term 11 (EL5042)]^FB Inputs Channel 1^Position'}
-    M1: ST_MotionStage := (sName := 'NEH:PPM:MMS', nEnableMode := ENUM_StageEnableMode.ALWAYS, bPowerSelf := TRUE, bHardwareEnable := True);
+    stYStage: ST_MotionStage := (sName := 'NEH:PPM:MMS', nEnableMode := ENUM_StageEnableMode.ALWAYS, bPowerSelf := TRUE, bHardwareEnable := True);
 END_VAR
 VAR CONSTANT
     // State defaults if not provided
@@ -86,7 +86,7 @@ END_VAR]]></Declaration>
     bInit := TRUE;
 
     //stYStage.nEnableMode := ENUM_StageEnableMode.DURING_MOTION;
-	stYStage.nEnableMode := ENUM_StageEnableMode.ALWAYS;
+    stYStage.nEnableMode := ENUM_StageEnableMode.ALWAYS;
 
     // Partial backcompat, this used to set fVelocity too but this should be set per install
     (*fbStateDefaults(stPositionState:=stOut, sNameDefault:='OUT', fDeltaDefault:=fDelta, fAccelDefault:=fAccel, fDecelDefault:=fOutDecel);
@@ -96,10 +96,10 @@ END_VAR]]></Declaration>
 END_IF
 
 stYStage.bHardwareEnable := TRUE;
-stYStage.bPowerSelf := TRUE;
+stYStage.bPowerSelf := FALSE;
 
-fbYStage(stMotionStage:=M1);
-(*
+fbYStage(stMotionStage:=stYStage);
+
 // We need to update from PLC or from EPICS, but not both
 fbArrCheckWrite(
     astPositionState:=astPositionState,
@@ -139,7 +139,7 @@ stOut := astPositionState[E_PPM_States.OUT];
 stPower := astPositionState[E_PPM_States.POWERMETER];
 stYag1 := astPositionState[E_PPM_States.YAG1];
 stYag2 := astPositionState[E_PPM_States.YAG2];
-*)
+
 fbPowerMeter();]]></ST>
     </Implementation>
   </POU>
