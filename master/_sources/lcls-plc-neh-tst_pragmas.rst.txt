@@ -1,0 +1,21 @@
+
+Pragmas
+-------
+
+.. csv-table::
+    :header: PLC Name, Total Pragmas, Errors
+    :align: center
+
+    :ref:`neh_tst <neh_tst_overview_pragmas>`, 7, 0
+
+
+.. _neh_tst_overview_pragmas:
+
+
+neh_tst
+^^^^^^^
+
+Total pragmas found: 7
+Total linter errors: 0
+
+
