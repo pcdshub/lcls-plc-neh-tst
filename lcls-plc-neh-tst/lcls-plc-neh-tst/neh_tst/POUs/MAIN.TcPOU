@@ -53,9 +53,13 @@ VAR
 
     {attribute 'pytmc' := 'pv: NEH:PPM
                            io: i'}
-    {attribute 'TcLinkTo' := 'iVoltageINT := TIIB[Term 15 (EL3062)]^AI Inputs Channel 1^Value'}
+    {attribute 'TcLinkTo' := '.iVoltageINT := TIIB[Term 15 (EL3062)]^AI Standard Channel 1^Value'}
     fbPowerMeter: FB_PPM_PowerMeter;
 
+    {attribute 'TcLinkTo' := 'TIIB[Term 2 (EL3602)]^AI Inputs Channel 1^Value'}
+    validatorVoltage AT %I*: INT;
+    fValidatorVoltage : LREAL;
+    fbGetValidatorVoltage : FB_AnalogInput;
 
     // IM1K3-PPM: 1 Axis
     {attribute 'pytmc' := 'pv: NEH:PPM:MMS'}
@@ -63,7 +67,8 @@ VAR
                               .bLimitBackwardEnable := TIIB[Term 10 (EL7041)]^STM Status^Status^Digital input 2;
                               .bBrakeRelease        := TIIB[Term 12 (EL2004)]^Channel 1^Output;
                               .nRawEncoderULINT     := TIIB[Term 11 (EL5042)]^FB Inputs Channel 1^Position'}
-    stYStage: ST_MotionStage := (sName := 'NEH:PPM:MMS', nEnableMode := ENUM_StageEnableMode.ALWAYS, bPowerSelf := TRUE, bHardwareEnable := True);
+    M1: ST_MotionStage := (sName := 'NEH:PPM:MMS', nEnableMode := ENUM_StageEnableMode.ALWAYS, bPowerSelf := TRUE, bHardwareEnable := True);
+    iVoltageINT: INT;
 END_VAR
 VAR CONSTANT
     // State defaults if not provided
@@ -85,8 +90,8 @@ END_VAR]]></Declaration>
       <ST><![CDATA[IF NOT bInit THEN
     bInit := TRUE;
 
-    stYStage.nEnableMode := ENUM_StageEnableMode.DURING_MOTION;
-    stYStage.nEnableMode := ENUM_StageEnableMode.ALWAYS;
+    M1.nEnableMode := ENUM_StageEnableMode.DURING_MOTION;
+    M1.nEnableMode := ENUM_StageEnableMode.ALWAYS;
 
     // Partial backcompat, this used to set fVelocity too but this should be set per install
     (*fbStateDefaults(stPositionState:=stOut, sNameDefault:='OUT', fDeltaDefault:=fDelta, fAccelDefault:=fAccel, fDecelDefault:=fOutDecel);
@@ -95,10 +100,10 @@ END_VAR]]></Declaration>
     fbStateDefaults(stPositionState:=stYag2, sNameDefault:='YAG2', fDeltaDefault:=fDelta, fAccelDefault:=fAccel, fDecelDefault:=fAccel);*)
 END_IF
 
-stYStage.bHardwareEnable := TRUE;
-stYStage.bPowerSelf := FALSE;
+M1.bHardwareEnable := TRUE;
+M1.bPowerSelf := FALSE;
 
-fbYStage(stMotionStage:=stYStage);
+fbYStage(stMotionStage:=M1);
 
 // We need to update from PLC or from EPICS, but not both
 fbArrCheckWrite(
@@ -114,7 +119,7 @@ IF NOT fbArrCheckWrite.bHadWrite THEN
 END_IF
 
 fbStates(
-    stMotionStage:=stYStage,
+    stMotionStage:=M1,
     astPositionState:=astPositionState,
     eEnumSet:=eEnumSet,
     eEnumGet:=eEnumGet,
@@ -140,7 +145,14 @@ stPower := astPositionState[E_PPM_States.POWERMETER];
 stYag1 := astPositionState[E_PPM_States.YAG1];
 stYag2 := astPositionState[E_PPM_States.YAG2];
 
-fbPowerMeter();]]></ST>
+fbPowerMeter();
+
+fbGetValidatorVoltage(
+    iRaw := validatorVoltage,
+    iTermBits := 24,
+    fTermMax := 100000,
+    fTermMin := 0,
+    fReal => fValidatorVoltage);]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>
