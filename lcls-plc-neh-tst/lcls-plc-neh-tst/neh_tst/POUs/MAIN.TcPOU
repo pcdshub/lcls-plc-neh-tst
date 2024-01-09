@@ -57,9 +57,9 @@ VAR
     fbPowerMeter: FB_PPM_PowerMeter;
 
     {attribute 'TcLinkTo' := 'TIIB[Term 2 (EL3602)]^AI Inputs Channel 1^Value'}
-    validatorVoltage AT %I*: INT;
+	rawValidatorVoltage AT %I*: DINT;    
+	
     fValidatorVoltage : LREAL;
-    fbGetValidatorVoltage : FB_AnalogInput;
 
     // IM1K3-PPM: 1 Axis
     {attribute 'pytmc' := 'pv: NEH:PPM:MMS'}
@@ -147,12 +147,25 @@ stYag2 := astPositionState[E_PPM_States.YAG2];
 
 fbPowerMeter();
 
-fbGetValidatorVoltage(
-    iRaw := validatorVoltage,
-    iTermBits := 24,
-    fTermMax := 100000,
-    fTermMin := 0,
-    fReal => fValidatorVoltage);]]></ST>
+
+fValidatorVoltage := rawValidatorVoltage / EXPT(2, 23) * 5;
+(*
+//
+//IF (rawValidatorVoltage AND 16#800000) > 0 THEN
+	// undo twos compliment for a negative number
+//	rawValidatorVoltage := rawValidatorVoltage AND 16#7FFFFF;
+//	rawValidatorVoltage := (NOT(rawValidatorVoltage) AND 16#7FFFFF) + 1;
+//	fValidatorVoltage := -1 * (rawValidatorVoltage / EXPT(2, 23) * 5);
+ELSE
+	// positive int case 
+	rawValidatorVoltage := rawValidatorVoltage AND 16#7FFFFF;
+	fValidatorVoltage := rawValidatorVoltage / EXPT(2, 23) * 5;
+END_IF;
+
+*)
+
+	 
+]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>

@@ -1229,10 +1229,6 @@ External Setpoint Generation:
 					<Type>INT</Type>
 				</Var>
 				<Var>
-					<Name>MAIN.validatorVoltage</Name>
-					<Type>INT</Type>
-				</Var>
-				<Var>
 					<Name>MAIN.fbPowerMeter.iVoltageINT</Name>
 					<Type>INT</Type>
 				</Var>
@@ -1453,6 +1449,20 @@ External Setpoint Generation:
 					</OwnerB>
 				</OwnerA>
 			</UnrestoredVarLinks>
+			<UnrestoredVarLinks ImportTime="2024-01-08T13:24:57">
+				<OwnerA Name="InputDst" Prefix="TIPC^neh_tst^neh_tst Instance" Type="1">
+					<OwnerB Name="TIID^Device 1 (EtherCAT)^Term 6 (EK1200)^Term 2 (EL3602)">
+						<Link VarA="MAIN.validatorVoltage" TypeA="INT" InOutA="0" GuidA="{18071995-0000-0000-0000-000000000006}" VarB="AI Inputs Channel 1^Value" AutoLink="true" Size="16" RestoreInfo="ANotFound"/>
+					</OwnerB>
+				</OwnerA>
+			</UnrestoredVarLinks>
+			<UnrestoredVarLinks ImportTime="2024-01-08T16:50:00">
+				<OwnerA Name="InputDst" Prefix="TIPC^neh_tst^neh_tst Instance" Type="1">
+					<OwnerB Name="TIID^Device 1 (EtherCAT)^Term 6 (EK1200)^Term 2 (EL3602)">
+						<Link VarA="MAIN.rawValidatorVoltage" TypeA="DINT" InOutA="0" GuidA="{18071995-0000-0000-0000-000000000009}" VarB="AI Inputs Channel 1^Value" AutoLink="true" RestoreInfo="ANotFound"/>
+					</OwnerB>
+				</OwnerA>
+			</UnrestoredVarLinks>
 			<TaskPouOids>
 				<TaskPouOid Prio="20" OTCID="#x08502001"/>
 			</TaskPouOids>
@@ -1460,9 +1470,6 @@ External Setpoint Generation:
 	</Project>
 	<Mappings>
 		<OwnerA Name="neh_tst Instance">
-			<OwnerB Name="TIID^Device 1 (EtherCAT)^Term 6 (EK1200)^Term 2 (EL3602)">
-				<Link VarA="PlcTask Inputs^MAIN.validatorVoltage" VarB="AI Inputs Channel 1^Value" AutoLink="true"/>
-			</OwnerB>
 			<OwnerB Name="TIID^Device 1 (EtherCAT)^Term 6 (EK1200)^Term 8 (EK1122)^Term 9 (EK1100)^Term 10 (EL7041)">
 				<Link VarA="PlcTask Inputs^MAIN.M1.bLimitBackwardEnable" VarB="STM Status^Status^Digital input 2" AutoLink="true"/>
 				<Link VarA="PlcTask Inputs^MAIN.M1.bLimitForwardEnable" VarB="STM Status^Status^Digital input 1" AutoLink="true"/>
