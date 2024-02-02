@@ -56,10 +56,14 @@ VAR
     {attribute 'TcLinkTo' := '.iVoltageINT := TIIB[Term 15 (EL3062)]^AI Standard Channel 1^Value'}
     fbPowerMeter: FB_PPM_PowerMeter;
 
-    {attribute 'TcLinkTo' := 'TIIB[Term 2 (EL3602)]^AI Inputs Channel 1^Value'}
-	rawValidatorVoltage AT %I*: DINT;    
+    {attribute 'TcLinkTo' := 'TIIB[Term 3 (EL3002)]^AI Standard Channel 1^Value'}
+	rawValidatorVoltage AT %I*: INT;    
 	
     fValidatorVoltage : LREAL;
+	
+	{attribute 'TcLinkTo' := 'TIIB[Term 3 (EL3002)]^AI Inputs Channel 2^Value'}
+	rVVV AT %I* : DINT;
+	fVVV : LREAL;
 
     // IM1K3-PPM: 1 Axis
     {attribute 'pytmc' := 'pv: NEH:PPM:MMS'}
@@ -69,6 +73,10 @@ VAR
                               .nRawEncoderULINT     := TIIB[Term 11 (EL5042)]^FB Inputs Channel 1^Position'}
     M1: ST_MotionStage := (sName := 'NEH:PPM:MMS', nEnableMode := ENUM_StageEnableMode.ALWAYS, bPowerSelf := TRUE, bHardwareEnable := True);
     iVoltageINT: INT;
+	
+	
+	fbGetPMVoltage: FB_AnalogInput;
+	fVoltageOther : LREAL;
 END_VAR
 VAR CONSTANT
     // State defaults if not provided
@@ -90,9 +98,10 @@ END_VAR]]></Declaration>
       <ST><![CDATA[IF NOT bInit THEN
     bInit := TRUE;
 
+	// normal op
     M1.nEnableMode := ENUM_StageEnableMode.DURING_MOTION;
     M1.nEnableMode := ENUM_StageEnableMode.ALWAYS;
-
+    
     // Partial backcompat, this used to set fVelocity too but this should be set per install
     (*fbStateDefaults(stPositionState:=stOut, sNameDefault:='OUT', fDeltaDefault:=fDelta, fAccelDefault:=fAccel, fDecelDefault:=fOutDecel);
     fbStateDefaults(stPositionState:=stPower, sNameDefault:='POWERMETER', fDeltaDefault:=fDelta, fAccelDefault:=fAccel, fDecelDefault:=fAccel);
@@ -148,23 +157,19 @@ stYag2 := astPositionState[E_PPM_States.YAG2];
 fbPowerMeter();
 
 
-fValidatorVoltage := rawValidatorVoltage / EXPT(2, 23) * 5;
-(*
-//
-//IF (rawValidatorVoltage AND 16#800000) > 0 THEN
-	// undo twos compliment for a negative number
-//	rawValidatorVoltage := rawValidatorVoltage AND 16#7FFFFF;
-//	rawValidatorVoltage := (NOT(rawValidatorVoltage) AND 16#7FFFFF) + 1;
-//	fValidatorVoltage := -1 * (rawValidatorVoltage / EXPT(2, 23) * 5);
-ELSE
-	// positive int case 
-	rawValidatorVoltage := rawValidatorVoltage AND 16#7FFFFF;
-	fValidatorVoltage := rawValidatorVoltage / EXPT(2, 23) * 5;
-END_IF;
+fValidatorVoltage := rawValidatorVoltage / EXPT(2, 12) * 10;
 
+(*
+rVVV := rVVV AND 16#7FFFFF;
+fVVV := rVVV / EXPT(2,23) * 5;
 *)
 
-	 
+fbGetPMVoltage(
+    iRaw := rawValidatorVoltage,
+    iTermBits := 15,
+    fTermMax := 10000,
+    fTermMin := 0,
+    fReal => fVoltageOther);
 ]]></ST>
     </Implementation>
   </POU>
