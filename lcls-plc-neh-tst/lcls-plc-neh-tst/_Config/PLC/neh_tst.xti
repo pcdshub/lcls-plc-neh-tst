@@ -1233,10 +1233,6 @@ External Setpoint Generation:
 					<Type>INT</Type>
 				</Var>
 				<Var>
-					<Name>MAIN.rVVV</Name>
-					<Type>DINT</Type>
-				</Var>
-				<Var>
 					<Name>MAIN.fbPowerMeter.iVoltageINT</Name>
 					<Type>INT</Type>
 				</Var>
@@ -1262,6 +1258,10 @@ External Setpoint Generation:
 						<![CDATA[ Connect this input to the terminal]]>
 					</Comment>
 					<Type>INT</Type>
+				</Var>
+				<Var>
+					<Name>MAIN.rVVV</Name>
+					<Type>DINT</Type>
 				</Var>
 				<Var>
 					<Name>MAIN.M1.Axis.NcToPlc</Name>
@@ -1478,9 +1478,6 @@ External Setpoint Generation:
 	</Project>
 	<Mappings>
 		<OwnerA Name="neh_tst Instance">
-			<OwnerB Name="TIID^Device 1 (EtherCAT)^Term 6 (EK1200)^Term 3 (EL3002)">
-				<Link VarA="PlcTask Inputs^MAIN.rawValidatorVoltage" VarB="AI Standard Channel 1^Value" AutoLink="true"/>
-			</OwnerB>
 			<OwnerB Name="TIID^Device 1 (EtherCAT)^Term 6 (EK1200)^Term 8 (EK1122)^Term 9 (EK1100)^Term 10 (EL7041)">
 				<Link VarA="PlcTask Inputs^MAIN.M1.bLimitBackwardEnable" VarB="STM Status^Status^Digital input 2" AutoLink="true"/>
 				<Link VarA="PlcTask Inputs^MAIN.M1.bLimitForwardEnable" VarB="STM Status^Status^Digital input 1" AutoLink="true"/>
@@ -1493,6 +1490,10 @@ External Setpoint Generation:
 			</OwnerB>
 			<OwnerB Name="TIID^Device 1 (EtherCAT)^Term 6 (EK1200)^Term 8 (EK1122)^Term 9 (EK1100)^Term 15 (EL3062)">
 				<Link VarA="PlcTask Inputs^MAIN.fbPowerMeter.iVoltageINT" VarB="AI Standard Channel 1^Value" AutoLink="true"/>
+			</OwnerB>
+			<OwnerB Name="TINC^NC-Task 1 SAF^Axes^Axis 1">
+				<Link VarA="PlcTask Inputs^MAIN.M1.Axis.NcToPlc" VarB="Outputs^ToPlc"/>
+				<Link VarA="PlcTask Outputs^MAIN.M1.Axis.PlcToNc" VarB="Inputs^FromPlc"/>
 			</OwnerB>
 		</OwnerA>
 	</Mappings>
