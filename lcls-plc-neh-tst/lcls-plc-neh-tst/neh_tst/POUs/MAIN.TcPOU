@@ -99,9 +99,11 @@ END_VAR]]></Declaration>
     bInit := TRUE;
 
 	// normal op
-    M1.nEnableMode := ENUM_StageEnableMode.DURING_MOTION;
-    M1.nEnableMode := ENUM_StageEnableMode.ALWAYS;
+    //M1.nEnableMode := ENUM_StageEnableMode.DURING_MOTION;
     
+	M1.nEnableMode := ENUM_StageEnableMode.ALWAYS;
+    M1.bHardwareEnable := TRUE;
+	M1.bPowerSelf := TRUE;
     // Partial backcompat, this used to set fVelocity too but this should be set per install
     (*fbStateDefaults(stPositionState:=stOut, sNameDefault:='OUT', fDeltaDefault:=fDelta, fAccelDefault:=fAccel, fDecelDefault:=fOutDecel);
     fbStateDefaults(stPositionState:=stPower, sNameDefault:='POWERMETER', fDeltaDefault:=fDelta, fAccelDefault:=fAccel, fDecelDefault:=fAccel);
@@ -109,11 +111,8 @@ END_VAR]]></Declaration>
     fbStateDefaults(stPositionState:=stYag2, sNameDefault:='YAG2', fDeltaDefault:=fDelta, fAccelDefault:=fAccel, fDecelDefault:=fAccel);*)
 END_IF
 
-M1.bHardwareEnable := TRUE;
-M1.bPowerSelf := FALSE;
-
 fbYStage(stMotionStage:=M1);
-
+(*
 // We need to update from PLC or from EPICS, but not both
 fbArrCheckWrite(
     astPositionState:=astPositionState,
@@ -153,7 +152,7 @@ stOut := astPositionState[E_PPM_States.OUT];
 stPower := astPositionState[E_PPM_States.POWERMETER];
 stYag1 := astPositionState[E_PPM_States.YAG1];
 stYag2 := astPositionState[E_PPM_States.YAG2];
-
+*)
 fbPowerMeter();
 
 
