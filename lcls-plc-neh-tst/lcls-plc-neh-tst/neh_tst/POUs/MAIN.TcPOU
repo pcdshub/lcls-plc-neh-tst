@@ -66,11 +66,11 @@ VAR
 	fVVV : LREAL;
 
     // IM1K3-PPM: 1 Axis
-    {attribute 'pytmc' := 'pv: NEH:PPM:MMS'}
     {attribute 'TcLinkTo' := '.bLimitForwardEnable  := TIIB[Term 10 (EL7041)]^STM Status^Status^Digital input 1;
                               .bLimitBackwardEnable := TIIB[Term 10 (EL7041)]^STM Status^Status^Digital input 2;
                               .bBrakeRelease        := TIIB[Term 12 (EL2004)]^Channel 1^Output;
                               .nRawEncoderULINT     := TIIB[Term 11 (EL5042)]^FB Inputs Channel 1^Position'}
+    {attribute 'pytmc' := 'pv: NEH:PPM:MMS'}
     M1: ST_MotionStage := (sName := 'NEH:PPM:MMS', nEnableMode := ENUM_StageEnableMode.ALWAYS, bPowerSelf := TRUE, bHardwareEnable := True);
     iVoltageINT: INT;
 	

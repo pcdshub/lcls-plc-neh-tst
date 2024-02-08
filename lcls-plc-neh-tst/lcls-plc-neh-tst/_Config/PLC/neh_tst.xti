@@ -1478,6 +1478,9 @@ External Setpoint Generation:
 	</Project>
 	<Mappings>
 		<OwnerA Name="neh_tst Instance">
+			<OwnerB Name="TIID^Device 1 (EtherCAT)^Term 6 (EK1200)^Term 3 (EL3002)">
+				<Link VarA="PlcTask Inputs^MAIN.rawValidatorVoltage" VarB="AI Standard Channel 1^Value" AutoLink="true"/>
+			</OwnerB>
 			<OwnerB Name="TIID^Device 1 (EtherCAT)^Term 6 (EK1200)^Term 8 (EK1122)^Term 9 (EK1100)^Term 10 (EL7041)">
 				<Link VarA="PlcTask Inputs^MAIN.M1.bLimitBackwardEnable" VarB="STM Status^Status^Digital input 2" AutoLink="true"/>
 				<Link VarA="PlcTask Inputs^MAIN.M1.bLimitForwardEnable" VarB="STM Status^Status^Digital input 1" AutoLink="true"/>
